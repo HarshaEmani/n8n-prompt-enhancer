@@ -1,0 +1,496 @@
+{
+  "name": "Prompt Enhancer",
+  "nodes": [
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Telegram Trigger1').item.json.message.voice.file_id }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "id": "6a6cb255-0a06-4719-9162-1c04cf5f2391"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6874bd84-1367-4fe1-8435-37fa5f4de111",
+                    "leftValue": "={{ $('Telegram Trigger1').item.json.message.text }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -224,
+        240
+      ],
+      "id": "626b5de2-c2ff-431b-8b5d-d414c4a561b1",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Telegram Trigger1').item.json.message.voice.file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -16,
+        16
+      ],
+      "id": "10173f1b-ccb3-48f0-8e10-3b58e043b695",
+      "name": "Telegram3",
+      "webhookId": "a1c1809d-9539-4e3e-b22e-a0a62c44f40a",
+      "credentials": {
+        "telegramApi": {
+          "id": "yLAWoD7cFzXtbMqU",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {
+          "download": true
+        }
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -880,
+        240
+      ],
+      "id": "d9fcec71-91f2-465a-846e-1ecd2f30f843",
+      "name": "Telegram Trigger1",
+      "webhookId": "04666f2e-9887-4489-a6b3-2e575e4546df",
+      "credentials": {
+        "telegramApi": {
+          "id": "yLAWoD7cFzXtbMqU",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c556b4e4-45da-4828-9339-2f804405e9cb",
+              "name": "response_message",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -656,
+        240
+      ],
+      "id": "8d704e3c-dfde-4404-a283-8124be2c2fc5",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f0288c59-5099-4846-88fc-4a4865c1fa46",
+              "name": "prestataire_nom",
+              "value": "Terrier Tom",
+              "type": "string"
+            },
+            {
+              "id": "fee43e35-2ba1-47e0-b393-5979bd386052",
+              "name": "telegram_chat_id",
+              "value": 7660706504,
+              "type": "string"
+            },
+            {
+              "id": "4aa7e189-62ab-4782-ace7-beec6ab416b9",
+              "name": "client_nom",
+              "value": "Mme Dupont ",
+              "type": "string"
+            },
+            {
+              "id": "4be9d017-366b-4e91-acdb-94766aa243d1",
+              "name": "date_intervention",
+              "value": "27/03/2025 à 14h",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -448,
+        240
+      ],
+      "id": "f7cdd1d4-89ab-4cc4-bbef-fbb27fb29b8c",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/upload/v1beta/files",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Goog-Upload-Protocol",
+              "value": "resumable"
+            },
+            {
+              "name": "X-Goog-Upload-Command",
+              "value": "start"
+            },
+            {
+              "name": "X-Goog-Upload-Header-Content-Length",
+              "value": "={{ $json.result.file_size }}"
+            },
+            {
+              "name": "X-Goog-Upload-Header-Content-Type",
+              "value": "audio/ogg"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"file\": {\n    \"display_name\": \"file_0\"\n  }\n}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        224,
+        -80
+      ],
+      "id": "54013057-ae52-4921-9526-1521800bfb62",
+      "name": "initialize upload session",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "P7lt4Ik0M59mjCp6",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.headers['x-goog-upload-url'] }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Length",
+              "value": "={{ $json.result.file_size }}"
+            },
+            {
+              "name": "X-Goog-Upload-Offset",
+              "value": "0"
+            },
+            {
+              "name": "X-Goog-Upload-Command",
+              "value": "upload, finalize"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        608,
+        128
+      ],
+      "id": "510ce7e6-978c-4698-a71f-b0aa3081748c",
+      "name": "Upload file"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        432,
+        176
+      ],
+      "id": "01c5f8a3-2c94-4991-8c2c-e5252933d75e",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        { \"text\": \"Transcribe the following audio message:\" },\n        { \n          \"file_data\": {\n            \"mime_type\": \"audio/ogg\",\n            \"file_uri\": \"{{ $json.file.uri }}\"\n          }\n        }\n      ]\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        896,
+        144
+      ],
+      "id": "9c266613-82fc-495c-9ccf-9a234207b23a",
+      "name": "Ask Gemini to transcribe",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "P7lt4Ik0M59mjCp6",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.chat.id }}",
+        "text": "={{ $json.content.parts[0].text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1552,
+        144
+      ],
+      "id": "80f0ea43-1609-4f5d-bc5e-0d6ddaf81b76",
+      "name": "Send a text message",
+      "webhookId": "affb3080-212a-4e23-93c7-88c273f3c67d",
+      "credentials": {
+        "telegramApi": {
+          "id": "yLAWoD7cFzXtbMqU",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an expert prompt engineer. You help me in enhancing my prompts to use with generative AIs with extra details. With the input text that I provide, I want you to automatically understand the requirements and generate a prompt which uses the following RICC structure:\n\n\nRole - What role I want the AI to be\n\nInput - What the input is like for example is it data from a database, or an image etc, and what's the relevance. If you don't have information on that, make your best guess. You don't have to mention the direct input, just state the relevant details.\n\nContext - Give the model some context\n\nConstraints -  Constraints on what it must do, like for example stick to t\nhe answer, do not provide additional information unless asked for etc. This step decides the optimal direction for the AI to take.\n\nWrite the prompt as a first person, as if I was writing it. Do not ask me for any follow-up questions, as I cannot respond. Use your best knowledge to figure out the best prompt. If you think that prompt cannot be generated for the given text, or if any additional information is required, ask me for that additional information in the prompt. \n\nDo not mention things like here's the prompt, and follow the instructions and structure.\n\nHere's the text for which I want you to generate a prompt for:\n{{ $json.candidates[0].content.parts[0].text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        1104,
+        144
+      ],
+      "id": "b5634c1c-9e95-48c9-b531-90ebb663dd3a",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "P7lt4Ik0M59mjCp6",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Telegram3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram3": {
+      "main": [
+        [
+          {
+            "node": "initialize upload session",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "initialize upload session": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload file": {
+      "main": [
+        [
+          {
+            "node": "Ask Gemini to transcribe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ask Gemini to transcribe": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3eb9f826-790d-4a41-be4d-7281ba040c3d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4dff2e32b97c56dbe79d2d6a823a43b4e37b16ca189276e6f9a72e3d5c98829b"
+  },
+  "id": "i6YIW1nmZfiWtwjj",
+  "tags": []
+}
