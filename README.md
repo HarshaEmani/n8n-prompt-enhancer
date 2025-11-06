@@ -48,6 +48,10 @@ _GIF: N8N Workflow in action._
 ![Telegram Chat](assets/Telegram%20Chat%20Screenshot.png)  
 _Screenshot: Gemini’s generated prompt sent back to the user._
 
+### **(Optional) Stage 6: Evaluate and use the prompt**
+
+-   The generated text prompt with specific instructions can then be further modified by the user or can be directly used with any text-based generative AI.
+
 ---
 
 ## 🧱 Prerequisites
